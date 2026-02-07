@@ -1,0 +1,46 @@
+services:
+  attacker-dns:
+    image: internetsystemsconsortium/bind9:9.18
+    container_name: attacker-dns
+    ports:
+      - "5300:53/udp"
+      - "5300:53/tcp"
+    volumes:
+      - ./bind_config/etc:/etc/bind
+      - ./bind_config/zones:/var/cache/bind
+    networks:
+      dns-lab-net:
+        ipv4_address: 172.25.0.10
+
+  victim-client:
+    image: ubuntu:22.04
+    container_name: victim-client
+    tty: true
+    stdin_open: true
+    depends_on:
+      - attacker-dns
+    dns:
+      - 172.25.0.10 
+    networks:
+      - dns-lab-net
+
+  capture-node:
+    image: nicolaka/netshoot
+    container_name: capture-node
+    tty: true
+    stdin_open: true
+    depends_on:
+      - victim-client
+    network_mode: "service:victim-client"
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    volumes:
+      - ./captures:/captures
+
+networks:
+  dns-lab-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.25.0.0/24

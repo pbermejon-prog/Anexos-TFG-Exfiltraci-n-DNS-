@@ -1,0 +1,17 @@
+;
+; Archivo de Zona para tunnel.lab
+;
+$TTL 60
+@   IN  SOA ns1.tunnel.lab. admin.tunnel.lab. (
+        1         ; Serial (increméntalo si haces cambios)
+        60        ; Refresh
+        60        ; Retry
+        60        ; Expire
+        60 )      ; Negative Cache TTL
+;
+; Definir el servidor de nombres para este dominio
+@   IN  NS  ns1.tunnel.lab.
+
+; Definir la dirección IP de nuestro servidor de nombres
+; Debe coincidir con la IP en docker-compose.yml
+ns1 IN  A   172.25.0.10

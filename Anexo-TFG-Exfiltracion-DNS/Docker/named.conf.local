@@ -1,0 +1,11 @@
+// Este archivo define tu zona "maliciosa" para la exfiltración.
+
+zone "tunnel.lab" {
+    type master;
+    // Apunta al archivo de zona que crearemos a continuación.
+    // La ruta /var/cache/bind coincide con el 'volume' de Docker.
+    file "/var/cache/bind/db.tunnel.lab";
+    allow-query { any; };
+    allow-transfer { none; };
+    notify no;
+};
